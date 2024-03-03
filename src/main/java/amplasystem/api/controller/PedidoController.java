@@ -8,21 +8,21 @@ public class PedidoController {
     
     @GetMapping
     public String get() {
-        return "GET";
+        return "AmplaSystems GET";
     }
 
     @PostMapping
     public String post() {
-        return "POST";
+        return "AmplaSystems POST";
     }
 
     @PutMapping
     public String put() {
-        return "PUT";
+        return "AmplaSystems PUT";
     }
 
     @DeleteMapping
     public String delete() {
-        return "DELETE";
+        return "AmplaSystems DELETE";
     }
 }
