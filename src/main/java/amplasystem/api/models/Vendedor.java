@@ -2,6 +2,7 @@ package amplasystem.api.models;
 
 import java.util.List;
 
+import amplasystem.api.enuns.Cargo;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -19,7 +20,7 @@ public class Vendedor {
     private String email;
     private String senha;
     private String nome;
-    private String cargo;
+    private Cargo cargo;
 
     @OneToMany(mappedBy = "vendedor")
     private List<Cliente> clientes;
