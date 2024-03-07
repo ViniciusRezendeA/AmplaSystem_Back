@@ -10,13 +10,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.interfaces.DecodedJWT;
-
 import amplasystem.api.Services.exceptions.ObjectNotFoundException;
 import amplasystem.api.dtos.ChangePasswordDTO;
+import amplasystem.api.dtos.VendedorDTO;
+import amplasystem.api.exceptions.ForgetPasswordException;
+import amplasystem.api.mappers.VendedorMapper;
 import amplasystem.api.models.Vendedor;
 import amplasystem.api.repositories.VendedorRepository;
+import amplasystem.api.utils.Cryptography;
 import jakarta.transaction.Transactional;
 
 @Transactional
@@ -28,32 +29,32 @@ public class VendedorService {
     @Autowired
     private final PasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    public List<Vendedor> getAllVendedors() {
-        return vendedorRepository.findAll();
+    public List<VendedorDTO> getAllVendedores() {
+        return vendedorRepository.findAll().stream().map(VendedorMapper::toDTO).collect(Collectors.toList());
     }
 
     public PasswordEncoder getBcrypt() {
         return this.encoder;
     }
 
-    public Vendedor getVendedorByEmail(String email) throws NoSuchElementException {
+    public VendedorDTO getVendedoresByEmail(String email) throws NoSuchElementException {
         Vendedor user = vendedorRepository.findByEmail(email);
         if (user == null) {
             throw new NoSuchElementException("Usuário não encontrado na base de dados");
         }
-        return user;
+        return VendedorMapper.toDTO(user);
     }
 
-    public Vendedor getVendedorById(Integer id) throws NoSuchElementException {
+    public VendedorDTO getVendedoresById(Integer id) throws NoSuchElementException {
         Optional<Vendedor> user = vendedorRepository.findById(id);
         if (!user.isPresent()) {
             throw new NoSuchElementException("Usuário não encontrado na base de dados");
         }
-        return vendedorRepository.findById(id).get();
+        return VendedorMapper.toDTO(vendedorRepository.findById(id).get());
     }
 
     public void changePassword(ChangePasswordDTO changePasswordDTO) {
-        if (changePasswordDTO.getToken() != null && !changePasswordDTO.getToken().equals("")) {
+        if (changePasswordDTO.getToken() != null && !changePasswordDTO.getToken().equals("") && changePasswordDTO.getToken().equals(Cryptography.tokenGenerate(changePasswordDTO.getEmail())) ) {
 
             Vendedor vendedor = vendedorRepository.findByEmail(changePasswordDTO.getEmail());
             if (vendedor == null) {
