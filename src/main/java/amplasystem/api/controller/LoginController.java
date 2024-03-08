@@ -4,7 +4,6 @@ package amplasystem.api.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -18,7 +17,7 @@ import amplasystem.api.Services.exceptions.ObjectNotFoundException;
 import amplasystem.api.dtos.ResponseDTO;
 import amplasystem.api.dtos.ResponseTokenDTO;
 import amplasystem.api.dtos.VendedorLoginDTO;
-
+import amplasystem.api.exceptions.InvalidInformationException;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -37,10 +36,10 @@ public class LoginController {
             ResponseDTO errorResponse = new ResponseDTO("Não encontrado",
                     e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
-        } catch (AuthenticationCredentialsNotFoundException e) {
-            ResponseDTO errorResponse = new ResponseDTO("Acesso Negado",
+        } catch (InvalidInformationException e) {
+            ResponseDTO responseDTO = new ResponseDTO("Dados inválido",
                     e.getMessage());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
         }
     }
 

@@ -2,7 +2,6 @@ package amplasystem.api.models;
 
 import java.util.List;
 
-import org.hibernate.validator.constraints.UniqueElements;
 
 import amplasystem.api.enuns.Cargo;
 import jakarta.persistence.Column;

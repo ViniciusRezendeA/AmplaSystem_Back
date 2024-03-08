@@ -1,7 +1,5 @@
 package amplasystem.api.controller;
 
-import java.util.NoSuchElementException;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,15 +10,17 @@ import org.springframework.web.bind.annotation.*;
 
 import amplasystem.api.Services.EmailSenderService;
 import amplasystem.api.Services.VendedorService;
+import amplasystem.api.Services.exceptions.ObjectNotFoundException;
 import amplasystem.api.dtos.ChangePasswordDTO;
 import amplasystem.api.dtos.ResponseDTO;
 import amplasystem.api.dtos.ForgetPasswordDTO;
 import amplasystem.api.dtos.VendedorDTO;
 import amplasystem.api.exceptions.ChangePasswordException;
 import amplasystem.api.exceptions.InvalidInformationException;
+import amplasystem.api.mappers.VendedorMapper;
 import amplasystem.api.models.Vendedor;
 import amplasystem.api.utils.Cryptography;
-import jakarta.mail.MessagingException;
+import amplasystem.api.utils.Generator;
 
 @RestController
 @RequestMapping("/vendedor")
@@ -40,11 +40,11 @@ public class VendedorController {
 
     @GetMapping(value = "/getVendedor/{id}")
     @ResponseBody
-    public ResponseEntity<?> getVendedorById(@PathVariable Integer id) throws NoSuchElementException {
+    public ResponseEntity<?> getVendedorById(@PathVariable Integer id) throws ObjectNotFoundException {
         try {
             VendedorDTO vendedor = vendedorService.getVendedoresById(id);
             return ResponseEntity.ok(vendedor);
-        } catch (NoSuchElementException e) {
+        } catch (ObjectNotFoundException e) {
             ResponseDTO responseDTO = new ResponseDTO("Usuário não encontrado.",
                     e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDTO);
@@ -53,29 +53,39 @@ public class VendedorController {
 
     @PostMapping(value = "/save")
     @ResponseBody
-    public ResponseEntity<?> save(@RequestBody Vendedor vendedor) {
+    public ResponseEntity<?> save(@RequestBody VendedorDTO vendedorDTO) {
         try {
+            Vendedor vendedor = VendedorMapper.toVendedor(vendedorDTO);
+            vendedor.setSenha(Generator.generatePassayPassword());
             vendedorService.save(vendedor);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Cadastrado");
+            emailSenderService.sendNewUser(vendedor.getEmail(), vendedor.getSenha());
+            ResponseDTO responseDTO = new ResponseDTO("Vendedor cadastrado com Sucesso",
+                    "O vendedor " + vendedor.getNome() + " agora esta cadastrado no sistema");
+            return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
         } catch (IllegalStateException e) {
             return ResponseEntity.badRequest().build();
         } catch (DataIntegrityViolationException e) {
             ResponseDTO responseDTO = new ResponseDTO("Email ja cadastrado",
                     "o email ja se encontra cadastrado, tente realizar o login");
             return ResponseEntity.status(422).body(responseDTO);
+        } catch (Exception e) {
+            ResponseDTO responseDTO = new ResponseDTO("System Error",
+                    "Infelizmente estamos com dificuldade no sistema, tente novamente, se persistir entre em contato com o suporte");
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(responseDTO);
         }
 
     }
 
     @DeleteMapping(value = "{id}")
-    public ResponseEntity<?> deleteVendedorById(@PathVariable Integer id) throws NoSuchElementException {
+    public ResponseEntity<?> deleteVendedorById(@PathVariable Integer id) throws ObjectNotFoundException {
         try {
             VendedorDTO vendedor = vendedorService.deleteVendedorById(id);
             ResponseDTO responseDTO = new ResponseDTO("Vendedor deletado",
                     "O vendedor " + vendedor.getNome() + " foi deletado com sucesso!!");
             return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
 
-        } catch (NoSuchElementException e) {
+        } catch (ObjectNotFoundException e) {
             ResponseDTO responseDTO = new ResponseDTO("Vendedor não encontrado.",
                     "O vendedor não foi localizado em nossa base de dados");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDTO);
@@ -93,10 +103,17 @@ public class VendedorController {
             vendedorService.changePassword(changePasswordDTO);
             return ResponseEntity.status(200).body("Password changed");
         } catch (ChangePasswordException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(HttpStatus.BAD_REQUEST);
+            ResponseDTO responseDTO = new ResponseDTO("Confira os dados informados",
+                    e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
+        } catch (ObjectNotFoundException e) {
+            ResponseDTO responseDTO = new ResponseDTO("Confira os dados informados",
+                    e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDTO);
         } catch (Exception e) {
             ResponseDTO responseDTO = new ResponseDTO("System Error",
-                    "Infelizmente estamos com dificuldade no sistema");
+                    "Infelizmente estamos com dificuldade no sistema, tente novamente, se persistir entre em contato com o suporte");
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(responseDTO);
         }
 
@@ -115,7 +132,7 @@ public class VendedorController {
             ResponseDTO responseDTO = new ResponseDTO("Dados inválido",
                     e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
-        } catch (NoSuchElementException e) {
+        } catch (ObjectNotFoundException e) {
             ResponseDTO responseDTO = new ResponseDTO("Vendedor não encontrado",
                     e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDTO);
@@ -125,6 +142,30 @@ public class VendedorController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(responseDTO);
         }
+    }
+
+    @PutMapping("update/{id}")
+    @ResponseBody
+    public ResponseEntity<?> update(@PathVariable Integer id, @RequestBody VendedorDTO vendedor) {
+        try {
+            VendedorDTO updatedVendedorDTO = vendedorService.getVendedoresById(id);
+            vendedor.setId(updatedVendedorDTO.getId());
+            vendedorService.update(VendedorMapper.toVendedor(vendedor));
+            ResponseDTO responseDTO = new ResponseDTO("Vendedor atualizado com Sucesso",
+                    "Os dados do vendedor " + vendedor.getNome() + " agora estão atualizados no sistema");
+            return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (DataIntegrityViolationException e) {
+            ResponseDTO responseDTO = new ResponseDTO("Email ja cadastrado",
+                    "o email informado para atualização ja esta cadastrado");
+            return ResponseEntity.status(422).body(responseDTO);
+        } catch (ObjectNotFoundException e) {
+            ResponseDTO responseDTO = new ResponseDTO("Vendedor não encontrado",
+                    e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDTO);
+        }
+
     }
 
 }

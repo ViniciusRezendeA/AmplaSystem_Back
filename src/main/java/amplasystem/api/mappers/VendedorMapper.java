@@ -16,5 +16,8 @@ public class VendedorMapper {
         return new VendedorDTO(vendedor.getId(), vendedor.getNome(), vendedor.getEmail(),
                 vendedor.getCargo());
     }
-
+    public static Vendedor toVendedor(VendedorDTO vendedor) {
+        return new Vendedor(vendedor.getId(), vendedor.getEmail(),null, vendedor.getNome(),
+                vendedor.getCargo(),null);
+    }
 }
