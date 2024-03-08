@@ -1,6 +1,7 @@
 package amplasystem.api.controller;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -62,22 +63,20 @@ public class VendedorController {
             ResponseDTO responseDTO = new ResponseDTO("Vendedor cadastrado com Sucesso",
                     "O vendedor " + vendedor.getNome() + " agora esta cadastrado no sistema");
             return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
-        } catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().build();
         } catch (DataIntegrityViolationException e) {
-            ResponseDTO responseDTO = new ResponseDTO("Email ja cadastrado",
+            ResponseDTO errResponseDTO = new ResponseDTO("Email ja cadastrado",
                     "o email ja se encontra cadastrado, tente realizar o login");
-            return ResponseEntity.status(422).body(responseDTO);
+            return ResponseEntity.status(422).body(errResponseDTO);
         } catch (Exception e) {
-            ResponseDTO responseDTO = new ResponseDTO("System Error",
+            ResponseDTO errResponseDTO = new ResponseDTO("System Error",
                     "Infelizmente estamos com dificuldade no sistema, tente novamente, se persistir entre em contato com o suporte");
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(responseDTO);
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(errResponseDTO);
         }
 
     }
 
-    @DeleteMapping(value = "{id}")
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity<?> deleteVendedorById(@PathVariable Integer id) throws ObjectNotFoundException {
         try {
             VendedorDTO vendedor = vendedorService.deleteVendedorById(id);
@@ -86,13 +85,17 @@ public class VendedorController {
             return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
 
         } catch (ObjectNotFoundException e) {
-            ResponseDTO responseDTO = new ResponseDTO("Vendedor não encontrado.",
+            ResponseDTO errResponseDTO = new ResponseDTO("Vendedor não encontrado.",
                     "O vendedor não foi localizado em nossa base de dados");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDTO);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errResponseDTO);
         } catch (DataIntegrityViolationException e) {
-            ResponseDTO responseDTO = new ResponseDTO("Vendedor ",
+            ResponseDTO errResponseDTO = new ResponseDTO("Vendedor ",
                     "Existem relações com Clientes, Pedidos Faturados e Ordens de compra para este vendedor, para deleta-lo, altere o vendedor");
-            return ResponseEntity.status(422).body(responseDTO);
+            return ResponseEntity.status(422).body(errResponseDTO);
+        } catch (NoSuchElementException e) {
+            ResponseDTO errResponseDTO = new ResponseDTO("Vendedor não encontrado",
+                    e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errResponseDTO);
         }
     }
 
@@ -103,18 +106,18 @@ public class VendedorController {
             vendedorService.changePassword(changePasswordDTO);
             return ResponseEntity.status(200).body("Password changed");
         } catch (ChangePasswordException e) {
-            ResponseDTO responseDTO = new ResponseDTO("Confira os dados informados",
+            ResponseDTO errResponseDTO = new ResponseDTO("Confira os dados informados",
                     e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errResponseDTO);
         } catch (ObjectNotFoundException e) {
-            ResponseDTO responseDTO = new ResponseDTO("Confira os dados informados",
+            ResponseDTO errResponseDTO = new ResponseDTO("Confira os dados informados",
                     e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDTO);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errResponseDTO);
         } catch (Exception e) {
-            ResponseDTO responseDTO = new ResponseDTO("System Error",
+            ResponseDTO errResponseDTO = new ResponseDTO("System Error",
                     "Infelizmente estamos com dificuldade no sistema, tente novamente, se persistir entre em contato com o suporte");
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(responseDTO);
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(errResponseDTO);
         }
 
     }
@@ -129,18 +132,18 @@ public class VendedorController {
             return ResponseEntity.status(200).body("Email enviado para o usuário " + forgetPasswordDTO.getEmail());
 
         } catch (InvalidInformationException e) {
-            ResponseDTO responseDTO = new ResponseDTO("Dados inválido",
+            ResponseDTO errResponseDTO = new ResponseDTO("Dados inválido",
                     e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errResponseDTO);
         } catch (ObjectNotFoundException e) {
-            ResponseDTO responseDTO = new ResponseDTO("Vendedor não encontrado",
+            ResponseDTO errResponseDTO = new ResponseDTO("Vendedor não encontrado",
                     e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDTO);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errResponseDTO);
         } catch (Exception e) {
-            ResponseDTO responseDTO = new ResponseDTO("System Error",
+            ResponseDTO errResponseDTO = new ResponseDTO("System Error",
                     "Infelizmente estamos com dificuldade no sistema, tente novamente, se persistir entre em contato com o suporte");
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(responseDTO);
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(errResponseDTO);
         }
     }
 
@@ -157,13 +160,17 @@ public class VendedorController {
         } catch (IllegalStateException e) {
             return ResponseEntity.badRequest().build();
         } catch (DataIntegrityViolationException e) {
-            ResponseDTO responseDTO = new ResponseDTO("Email ja cadastrado",
+            ResponseDTO errResponseDTO = new ResponseDTO("Email ja cadastrado",
                     "o email informado para atualização ja esta cadastrado");
-            return ResponseEntity.status(422).body(responseDTO);
+            return ResponseEntity.status(422).body(errResponseDTO);
         } catch (ObjectNotFoundException e) {
-            ResponseDTO responseDTO = new ResponseDTO("Vendedor não encontrado",
+            ResponseDTO errResponseDTO = new ResponseDTO("Vendedor não encontrado",
                     e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDTO);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errResponseDTO);
+        } catch (NoSuchElementException e) {
+            ResponseDTO errResponseDTO = new ResponseDTO("Vendedor não encontrado",
+                    e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errResponseDTO);
         }
 
     }
