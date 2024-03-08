@@ -2,8 +2,13 @@ package amplasystem.api.models;
 
 import java.util.List;
 
+import org.hibernate.validator.constraints.UniqueElements;
+
 import amplasystem.api.enuns.Cargo;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
@@ -16,7 +21,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Vendedor {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(unique = true)
     private String email;
     private String senha;
     private String nome;

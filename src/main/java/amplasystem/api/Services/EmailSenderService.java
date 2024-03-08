@@ -11,7 +11,8 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import amplasystem.api.exceptions.ForgetPasswordException;
+import amplasystem.api.exceptions.ChangePasswordException;
+import amplasystem.api.exceptions.InvalidInformationException;
 import amplasystem.api.utils.Regex;
 
 import org.springframework.core.env.Environment;
@@ -46,10 +47,10 @@ public class EmailSenderService {
     private VendedorService vendedorService;
 
     public void sendRecoveryPasswordMail(String mail, String token)
-            throws MessagingException, ForgetPasswordException, UnsupportedEncodingException, NoSuchElementException{
+            throws MessagingException, InvalidInformationException, UnsupportedEncodingException, NoSuchElementException{
 
         if (!Regex.isValidEmail(mail)) {
-            throw new ForgetPasswordException("Email inválido");
+            throw new InvalidInformationException("Por favor, confira as informações enviadas");
         }
         vendedorService.getVendedoresByEmail(mail);
 

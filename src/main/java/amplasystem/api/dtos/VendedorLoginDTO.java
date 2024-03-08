@@ -1,18 +1,15 @@
 package amplasystem.api.dtos;
 
-import amplasystem.api.enuns.Cargo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Builder
 @Data
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
-public class VendedorDTO {
-    private Integer id;
-    private String nome;
+@AllArgsConstructor
+public class VendedorLoginDTO {
     private String email;
-    private Cargo cargo;
+    private String senha;
 }
