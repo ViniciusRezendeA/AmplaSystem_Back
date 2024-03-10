@@ -1,6 +1,6 @@
 package amplasystem.api.dtos;
 
-import amplasystem.api.enuns.Cargo;
+// ! import amplasystem.api.enuns.Cargo; Não utilizado
 import amplasystem.api.models.Financeiro;
 import amplasystem.api.models.OrdemDeCompra;
 import lombok.AllArgsConstructor;

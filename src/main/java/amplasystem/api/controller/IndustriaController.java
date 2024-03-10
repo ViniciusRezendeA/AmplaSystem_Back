@@ -4,7 +4,7 @@ import amplasystem.api.Services.IndustriaService;
 import amplasystem.api.dtos.ErrorResponse;
 import amplasystem.api.dtos.IndustriaDTO;
 import amplasystem.api.models.Industria;
-import jakarta.validation.Validator;
+// ! import jakarta.validation.Validator;  | Não utilizado
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +21,7 @@ public class IndustriaController {
     IndustriaService industriaService;
 
     @Autowired
-    private Validator validator;
-
+    // ! private Validator validator; | Não utilizado
 
     @GetMapping(value = "/")
     @ResponseBody
