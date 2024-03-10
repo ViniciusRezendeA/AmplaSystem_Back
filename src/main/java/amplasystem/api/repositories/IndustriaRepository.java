@@ -7,5 +7,5 @@ import amplasystem.api.models.Industria;
 
 @Repository
 public interface IndustriaRepository extends JpaRepository<Industria, Integer> {
-
+    boolean existsByNome(String nome);
 }

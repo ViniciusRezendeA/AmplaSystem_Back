@@ -1,22 +1,21 @@
-package amplasystem.api.models;
+package amplasystem.api.dtos;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
+import amplasystem.api.enuns.Cargo;
+import amplasystem.api.models.Financeiro;
+import amplasystem.api.models.OrdemDeCompra;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Entity
+@Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Industria {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class IndustriaDTO {
     private Integer id;
-    @NotBlank(message = "Nome da indústria é obrigatório.")
     private String nome;
     private String contatoComercial;
     private String telefoneComercial;
@@ -29,11 +28,6 @@ public class Industria {
     private String contatoPagamento;
     private String telefonePagamento;
     private String emailPagamento;
-
-    @OneToOne(mappedBy = "industria")
     private Financeiro financeiro;
-
-    @OneToMany(mappedBy = "industria")
     private List<OrdemDeCompra> ordemDeCompras;
-
 }
