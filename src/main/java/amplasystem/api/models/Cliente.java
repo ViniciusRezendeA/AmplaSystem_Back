@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,7 +29,9 @@ public class Cliente {
     @NotBlank(message = "Nome fantasia do cliente é obrigatorio")
     private String nomeFantasia;
 
-
+    @Column(name = "cnpj", nullable = false, columnDefinition = "CHAR(14)")
+    @NotBlank(message = "CNPJ do vendedor obrigatorio")
+    private String cnpj;
 
 
     @ManyToOne
@@ -37,5 +40,13 @@ public class Cliente {
 
     @OneToMany(mappedBy = "cliente")
     private List<OrdemDeCompra> ordemDeCompras;
+
+    @OneToOne
+    @JoinColumn(name = "telefone")
+    private Telefone telefone;
+
+    @OneToOne
+    @JoinColumn(name = "endereco")
+    private Endereco endereco;
     
 }

@@ -9,7 +9,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,17 +22,16 @@ public class Contato {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
-    @Column(length = 45)
-    @NotNull
+
+    @Column(name = "nome", nullable = false, length = 45)
     @NotBlank(message = "Nome do contato é obrigatório.")
     String nome;
 
-    @Column(length = 100)
+    @Column(name = "email", nullable = true, length = 100)
     String email;
 
-    @NotNull
-    @NotBlank(message = "Tipo do contato é obrigatório.")
-    TipoContato tipo;
+    @Column(name = "tipo_contato", nullable = false)
+    TipoContato tipoContato;
 
     @ManyToOne
     @JoinColumn(name = "industria_id")
@@ -41,5 +39,5 @@ public class Contato {
 
     @OneToOne
     @JoinColumn(name = "telefone_id")
-    private Telefone Telefone;
+    private Telefone telefone;
 }
