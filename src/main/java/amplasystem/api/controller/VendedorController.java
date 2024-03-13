@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
+import org.apache.commons.logging.Log;
 import org.hibernate.ObjectDeletedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -59,9 +60,11 @@ public class VendedorController {
     public ResponseEntity<?> save(@RequestBody VendedorDTO vendedorDTO) {
         try {
             Vendedor vendedor = VendedorMapper.toVendedor(vendedorDTO);
-            vendedor.setSenha(UUID.randomUUID().toString());
+            String password = UUID.randomUUID().toString().substring(0,5);
+            vendedor.setSenha(password);
+            System.out.println(vendedor.getSenha());
             vendedorService.save(vendedor);
-            emailSenderService.sendNewUser(vendedor.getEmail(), vendedor.getSenha());
+            emailSenderService.sendNewUser(vendedor.getEmail(), password);
             ResponseDTO responseDTO = new ResponseDTO("Vendedor cadastrado com Sucesso",
                     "O vendedor " + vendedor.getNome() + " agora esta cadastrado no sistema");
             return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
@@ -126,11 +129,13 @@ public class VendedorController {
 
     @PostMapping("/forgotPassword")
     public ResponseEntity<?> sendToken(@RequestBody ForgetPasswordDTO forgetPasswordDTO) {
-
+ 
         try {
-            emailSenderService.sendRecoveryPasswordMail(forgetPasswordDTO.getEmail());
-
-            return ResponseEntity.status(200).body("Email enviado para o usuário " + forgetPasswordDTO.getEmail());
+            VendedorDTO vendedor = vendedorService.getVendedoresByEmail(forgetPasswordDTO.getEmail());
+            String token = UUID.randomUUID().toString().substring(0, 5);
+            vendedorService.createPasswordResetTokenForUser(vendedor.getId(), token);
+            emailSenderService.sendRecoveryPasswordMail(vendedor.getEmail(),token);
+            return ResponseEntity.status(200).body("Email enviado para o usuário " + vendedor.getEmail());
 
         } catch (InvalidInformationException e) {
             ResponseDTO errResponseDTO = new ResponseDTO("Dados inválido",
