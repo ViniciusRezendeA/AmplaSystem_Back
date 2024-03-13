@@ -16,19 +16,10 @@ public class Industria {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @Column(name = "nome", nullable = false, length = 100)
     @NotBlank(message = "Nome da indústria é obrigatório.")
     private String nome;
-    private String contatoComercial;
-    private String telefoneComercial;
-    private String emailComercial;
-    private String contatoLogistica;
-    private String telefoneLogistica;
-    private String emailLogistica;
-    private String telefoneFinaceiro;
-    private String emailFinanceiro;
-    private String contatoPagamento;
-    private String telefonePagamento;
-    private String emailPagamento;
 
     @OneToOne(mappedBy = "industria")
     private Financeiro financeiro;
