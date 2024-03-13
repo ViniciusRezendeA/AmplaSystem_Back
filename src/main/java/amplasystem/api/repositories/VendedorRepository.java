@@ -8,4 +8,7 @@ import amplasystem.api.models.Vendedor;
 @Repository
 public interface VendedorRepository extends JpaRepository<Vendedor, Integer> {
     Vendedor findByEmail(String email);
+
+    Vendedor findByEmailAndSenha(String email, String senha);
 }
+ 
