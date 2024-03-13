@@ -68,7 +68,7 @@ public class EmailSenderService {
         vendedorService.getVendedoresByEmail(mail);
 
         String mailFrom = environment.getProperty("spring.mail.properties.mail.smtp.from");
-        String mailFromName = environment.getProperty("mail.from.name", "Identity");
+        String mailFromName = "AmplaSystem";
 
         final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
 

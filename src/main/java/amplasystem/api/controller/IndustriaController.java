@@ -1,8 +1,8 @@
 package amplasystem.api.controller;
 
 import amplasystem.api.services.IndustriaService;
-import amplasystem.api.dtos.ErrorResponse;
 import amplasystem.api.dtos.IndustriaDTO;
+import amplasystem.api.dtos.ResponseDTO;
 import amplasystem.api.models.Industria;
 // ! import jakarta.validation.Validator;  | Não utilizado
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ public class IndustriaController {
             IndustriaDTO industria = industriaService.getIndustriaById(id);
             return ResponseEntity.ok(industria);
         } catch (NoSuchElementException e) {
-            ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), "Indústria não encontrada.",
+            ResponseDTO errorResponse = new ResponseDTO("Indústria não encontrada.",
                     e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }
@@ -48,10 +48,10 @@ public class IndustriaController {
         try {
             return ResponseEntity.ok(industriaService.save(industria));
         } catch (IllegalStateException e) {
-            ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Indústria já cadastrada", e.getMessage());
+            ResponseDTO errorResponse = new ResponseDTO("Indústria já cadastrada", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         } catch (Exception e) {
-            ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Erro ao cadastrar indústria", e.getMessage());
+            ResponseDTO errorResponse = new ResponseDTO("Erro ao cadastrar indústria", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
@@ -62,7 +62,7 @@ public class IndustriaController {
         try {
             industriaService.delete(id);
         } catch (NoSuchElementException e) {
-            ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), "Indústria não encontrada.",
+            ResponseDTO errorResponse = new ResponseDTO("Indústria não encontrada.",
                     e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }
@@ -75,7 +75,7 @@ public class IndustriaController {
         try {
             industriaService.update(industria);
         } catch (NoSuchElementException e) {
-            ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), "Indústria não encontrada.",
+            ResponseDTO errorResponse = new ResponseDTO("Indústria não encontrada.",
                     e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }

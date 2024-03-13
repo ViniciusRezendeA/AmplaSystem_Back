@@ -2,6 +2,7 @@ package amplasystem.api.controller;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 import org.hibernate.ObjectDeletedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +59,7 @@ public class VendedorController {
     public ResponseEntity<?> save(@RequestBody VendedorDTO vendedorDTO) {
         try {
             Vendedor vendedor = VendedorMapper.toVendedor(vendedorDTO);
-            vendedor.setSenha(Generator.generatePassayPassword());
+            vendedor.setSenha(UUID.randomUUID().toString());
             vendedorService.save(vendedor);
             emailSenderService.sendNewUser(vendedor.getEmail(), vendedor.getSenha());
             ResponseDTO responseDTO = new ResponseDTO("Vendedor cadastrado com Sucesso",
