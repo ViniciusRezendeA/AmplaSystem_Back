@@ -30,7 +30,7 @@ public class Vendedor {
     @NotBlank(message = "Email do vendedor obrigatorio")
     private String email;
 
-    @Column(name = "senha", nullable = false, length = 45)
+    @Column(name = "senha", nullable = false)
     @NotBlank(message = "Senha do vendedor obrigatorio")
     private String senha;
 
