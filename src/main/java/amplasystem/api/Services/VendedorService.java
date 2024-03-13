@@ -1,4 +1,4 @@
-package amplasystem.api.Services;
+package amplasystem.api.services;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,7 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import amplasystem.api.Services.exceptions.ObjectNotFoundException;
+import amplasystem.api.services.exceptions.ObjectNotFoundException;
 import amplasystem.api.dtos.ChangePasswordDTO;
 import amplasystem.api.dtos.VendedorDTO;
 import amplasystem.api.exceptions.ChangePasswordException;

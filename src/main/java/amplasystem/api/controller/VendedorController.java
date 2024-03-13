@@ -3,15 +3,16 @@ package amplasystem.api.controller;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.hibernate.ObjectDeletedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import amplasystem.api.Services.EmailSenderService;
-import amplasystem.api.Services.VendedorService;
-import amplasystem.api.Services.exceptions.ObjectNotFoundException;
+import amplasystem.api.services.EmailSenderService;
+import amplasystem.api.services.VendedorService;
+import amplasystem.api.services.exceptions.ObjectNotFoundException;
 import amplasystem.api.dtos.ChangePasswordDTO;
 import amplasystem.api.dtos.ResponseDTO;
 import amplasystem.api.dtos.ForgetPasswordDTO;
@@ -45,7 +46,7 @@ public class VendedorController {
         try {
             VendedorDTO vendedor = vendedorService.getVendedoresById(id);
             return ResponseEntity.ok(vendedor);
-        } catch (ObjectNotFoundException e) {
+        } catch (ObjectDeletedException e) {
             ResponseDTO responseDTO = new ResponseDTO("Usuário não encontrado.",
                     e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDTO);
@@ -126,8 +127,7 @@ public class VendedorController {
     public ResponseEntity<?> sendToken(@RequestBody ForgetPasswordDTO forgetPasswordDTO) {
 
         try {
-            emailSenderService.sendRecoveryPasswordMail(forgetPasswordDTO.getEmail(),
-                    Cryptography.tokenGenerate(forgetPasswordDTO.getEmail()));
+            emailSenderService.sendRecoveryPasswordMail(forgetPasswordDTO.getEmail());
 
             return ResponseEntity.status(200).body("Email enviado para o usuário " + forgetPasswordDTO.getEmail());
 

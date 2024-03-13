@@ -1,4 +1,4 @@
-package amplasystem.api.Services;
+package amplasystem.api.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
