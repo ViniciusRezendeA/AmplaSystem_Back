@@ -1,6 +1,6 @@
-package amplasystem.api.Services;
+package amplasystem.api.services;
 
-import amplasystem.api.Services.exceptions.ObjectNotFoundException;
+import amplasystem.api.services.exceptions.ObjectNotFoundException;
 import amplasystem.api.dtos.IndustriaDTO;
 import amplasystem.api.mappers.IndustriaMapper;
 import amplasystem.api.models.Industria;

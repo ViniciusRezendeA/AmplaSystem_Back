@@ -1,6 +1,6 @@
 package amplasystem.api.controller;
 
-import amplasystem.api.Services.IndustriaService;
+import amplasystem.api.services.IndustriaService;
 import amplasystem.api.dtos.ErrorResponse;
 import amplasystem.api.dtos.IndustriaDTO;
 import amplasystem.api.models.Industria;

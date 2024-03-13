@@ -1,7 +1,11 @@
-package amplasystem.api.Services;
+//verificar se seria necessário a criação de um controller para o envio do email.
+
+
+package amplasystem.api.services;
 
 import java.io.UnsupportedEncodingException;
 import java.util.NoSuchElementException;
+// import java.util.UUID;
 
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +14,8 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+// import org.slf4j.Logger;
+// import org.slf4j.LoggerFactory;
 
 import amplasystem.api.exceptions.ForgetPasswordException;
 import amplasystem.api.utils.Regex;
@@ -25,6 +31,10 @@ import jakarta.transaction.Transactional;
 @Transactional
 @Service
 public class EmailSenderService {
+
+    //adicionado logger para geração de token para o envio do email, verificar se seria necessário
+    // @Autowired
+    // private static final Logger logger = LoggerFactory.getLogger(EmailSenderService.class);
 
     @Autowired
     private JavaMailSender mailSender;
@@ -47,6 +57,8 @@ public class EmailSenderService {
 
     public void sendRecoveryPasswordMail(String mail, String token)
             throws MessagingException, ForgetPasswordException, UnsupportedEncodingException, NoSuchElementException{
+                // token = UUID.randomUUID().toString();
+                // logger.info("Generated token: {}", token);
 
         if (!Regex.isValidEmail(mail)) {
             throw new ForgetPasswordException("Email inválido");

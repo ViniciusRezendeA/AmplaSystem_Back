@@ -10,8 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import amplasystem.api.Services.EmailSenderService;
-import amplasystem.api.Services.VendedorService;
+import amplasystem.api.services.EmailSenderService;
+import amplasystem.api.services.VendedorService;
 import amplasystem.api.dtos.ChangePasswordDTO;
 import amplasystem.api.dtos.ErrorResponse;
 import amplasystem.api.dtos.ForgetPasswordDTO;
