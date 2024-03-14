@@ -27,4 +27,6 @@ public class Industria {
     @OneToMany(mappedBy = "industria")
     private List<OrdemDeCompra> ordemDeCompras;
 
+    @OneToMany(mappedBy = "industria")
+    private List<Contato> contatos;
 }

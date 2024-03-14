@@ -2,6 +2,7 @@ package amplasystem.api.models;
 
 import java.util.List;
 
+
 import amplasystem.api.enuns.Cargo;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,11 +24,13 @@ public class Vendedor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+
+
     @Column(name = "email", nullable = false, length = 100, unique = true)
     @NotBlank(message = "Email do vendedor obrigatorio")
     private String email;
 
-    @Column(name = "senha", nullable = false, length = 45)
+    @Column(name = "senha", nullable = false)
     @NotBlank(message = "Senha do vendedor obrigatorio")
     private String senha;
 
